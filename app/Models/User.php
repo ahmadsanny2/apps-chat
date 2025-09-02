@@ -45,4 +45,11 @@ class User extends Authenticatable
             'password' => 'hashed',
         ];
     }
+
+    public function rooms()
+    {
+        return $this->belongsToMany(Room::class, 'room_user', 'user_id', 'room_id')
+            ->withTimestamps()
+            ->withPivot('joined_at');
+    }
 }
