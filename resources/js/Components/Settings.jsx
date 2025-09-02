@@ -1,6 +1,17 @@
+import axios from "axios";
 import Dropdown from "./Dropdown";
 
 export default function Settings({}) {
+    const logout = () => {
+        axios
+            .post("/logout")
+            .then((response) => {
+                window.location.href = "/login";
+            })
+            .catch((error) => {
+                console.log(error);
+            });
+    };
     return (
         <Dropdown>
             <Dropdown.Trigger>
@@ -22,7 +33,13 @@ export default function Settings({}) {
             </Dropdown.Trigger>
 
             <Dropdown.Content>
-                <Dropdown.Link>Log Out</Dropdown.Link>
+                <Dropdown.Link
+                    onClick={(e) => {
+                        logout();
+                    }}
+                >
+                    Log Out
+                </Dropdown.Link>
             </Dropdown.Content>
         </Dropdown>
     );
