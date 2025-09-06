@@ -8,14 +8,24 @@ use App\Models\Room;
 
 class RoomService
 {
-    public function getRooms()
+    public function getRooms(string $search = null)
     {
         $user = Auth::user();
 
-        return $user->rooms()
+        $query = $user->rooms()
             ->with(['members' => function ($query) use ($user) {
                 $query->where('user_id', '!=', $user->id);
-            }])
-            ->get();
+            }]);
+
+        if ($search) {
+            $query->where(function ($q) use ($user, $search) {
+                $q->where('type', 'private')
+                    ->whereHas('members', function ($memberQuery) use ($user, $search) {
+                        $memberQuery->where('user_id', '!=', $user->id)
+                            ->where('name', 'like', '%' . $search . '%');
+                    });
+            });
+        }
+        return $query->get();
     }
 }
