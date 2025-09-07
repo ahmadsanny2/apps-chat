@@ -19,11 +19,16 @@ class RoomService
 
         if ($search) {
             $query->where(function ($q) use ($user, $search) {
-                $q->where('type', 'private')
-                    ->whereHas('members', function ($memberQuery) use ($user, $search) {
-                        $memberQuery->where('user_id', '!=', $user->id)
-                            ->where('name', 'like', '%' . $search . '%');
-                    });
+                $q->where(function ($sub) use ($user, $search) {
+                    $sub->where('type', 'private')
+                        ->whereHas('members', function ($memberQuery) use ($user, $search) {
+                            $memberQuery->where('user_id', '!=', $user->id)
+                                ->where('name', 'like', '%' . $search . '%');
+                        });
+                })->orWhere(function ($sub) use ($user, $search) {
+                    $sub->where('type', 'group')
+                        ->where('name', 'like', '%' . $search . '%');
+                });
             });
         }
         return $query->get();
