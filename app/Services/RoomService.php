@@ -8,6 +8,26 @@ use App\Models\Room;
 
 class RoomService
 {
+    private function createResponse($user, $room)
+    {
+        $otherUser = $room->members->first();
+        if ($room->type == "private") {
+
+            return [
+                'id' => $room->id,
+                'type' => $room->type,
+                'name' => $otherUser->name,
+                'avatar' => $otherUser->avatar,
+            ];
+        } else if ($room->type == 'group') {
+            return [
+                'id' => $room->id,
+                'type' => $room->type,
+                'name' => $room->name,
+                'avatar' => '',
+            ];
+        }
+    }
     public function getRooms(string $search = null)
     {
         $user = Auth::user();
@@ -31,6 +51,8 @@ class RoomService
                 });
             });
         }
-        return $query->get();
+        return $query->get()->map(function ($room) use ($user) {
+            return $this->createResponse($user, $room);
+        });
     }
 }
