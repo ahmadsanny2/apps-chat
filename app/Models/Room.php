@@ -14,4 +14,9 @@ class Room extends Model
             ->withTimestamps()
             ->withPivot('joined_at');
     }
+
+    public function lastMessages()
+    {
+        return $this->hasOne(Message::class)->latestOfMany();
+    }
 }
