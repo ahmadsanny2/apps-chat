@@ -14,12 +14,29 @@ class RoomService
         $lastMessage = $room->lastMessage;
 
         $returnLastMessage = [];
+        $statusData = [];
+
         if ($lastMessage) {
+
+            dd($lastMessage->statusForOthers()->get());
+            if ($lastMessage->sender_id == $user->id) {
+                $statusData = $lastMessage->statusForOthers()->map(function ($status) {
+                    return [
+                        'reciever' => $status->recipient_id,
+                        'status' => $status->status,
+                        'read_at' => $status->read_at ? $status->read_at->toDateTimeString() : null,
+                    ];
+                });
+            } else {
+                // $lastMessage->type = 'received';
+            }
+
             $returnLastMessage = [
                 'id' => $lastMessage->id,
                 'type' => $lastMessage->type,
                 'message' => $lastMessage->message,
                 'created_at' => $lastMessage->created_at->toDateTimeString,
+                'status'=> $statusData,
             ];
         }
 
