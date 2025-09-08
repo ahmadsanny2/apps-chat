@@ -8,8 +8,14 @@ class Messages extends Model
 {
     //
 
-    public function statusForOthers(){
+    public function statusForOthers()
+    {
         return $this->hasMany(MessageUser::class)
-        ->where('recipient_id', '!=', auth()->id());
+            ->where('recipient_id', '!=', auth()->id());
+    }
+
+    public function statuses()
+    {
+        return $this->hasMany(MessageUser::class);
     }
 }

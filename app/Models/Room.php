@@ -19,4 +19,9 @@ class Room extends Model
     {
         return $this->hasOne(Message::class)->latestOfMany();
     }
+
+    public function messages()
+    {
+        return $this->hasMany(Message::class);
+    }
 }

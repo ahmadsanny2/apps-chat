@@ -15,6 +15,7 @@ class RoomService
 
         $returnLastMessage = [];
         $statusData = [];
+        $totalUnread = 0;
 
         if ($lastMessage) {
 
@@ -24,19 +25,25 @@ class RoomService
                     return [
                         'reciever' => $status->recipient_id,
                         'status' => $status->status,
-                        'read_at' => $status->read_at ? $status->read_at->toDateTimeString() : null,
+                        'readAt' => $status->read_at ? $status->read_at->toDateTimeString() : null,
                     ];
                 });
             } else {
-                // $lastMessage->type = 'received';
+                $totalUnread = $room->messages()
+                    ->whereHas('statuses', function ($query) use ($user) {
+                        $query->where('recipient_id', $user->id)
+                            ->where('status', 'read');
+                    })
+                    ->count();
             }
 
             $returnLastMessage = [
                 'id' => $lastMessage->id,
                 'type' => $lastMessage->type,
                 'message' => $lastMessage->message,
-                'created_at' => $lastMessage->created_at->toDateTimeString,
-                'status'=> $statusData,
+                'createdAt' => $lastMessage->created_at->toDateTimeString,
+                'status' => $statusData,
+
             ];
         }
 
@@ -48,6 +55,7 @@ class RoomService
                 'name' => $otherUser->name,
                 'avatar' => $otherUser->avatar,
                 'lastMessage' => $returnLastMessage,
+                'totalUnread' => $totalUnread,
             ];
         } else if ($room->type == 'group') {
             return [
