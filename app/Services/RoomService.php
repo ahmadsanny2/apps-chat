@@ -51,6 +51,7 @@ class RoomService
 
             return [
                 'id' => $room->id,
+                'user_id' => $otherUser->id,
                 'type' => $room->type,
                 'name' => $otherUser->name,
                 'avatar' => $otherUser->avatar,

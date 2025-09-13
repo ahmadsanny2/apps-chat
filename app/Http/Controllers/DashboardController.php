@@ -23,6 +23,16 @@ class DashboardController extends Controller
             $contacts = $roomService->getContact($search);
             $rooms = $roomService->getRooms();
 
+            $roomUserIds = collect($rooms)
+                ->where('type', 'private')
+                ->pluck('user_id')
+                ->all();
+
+            $contacts = $contacts
+                ->reject(function ($contacts) use ($roomUserIds) {
+                    return in_array($contacts['user_id'], $roomUserIds);
+                });
+
             $data['rooms'] = $contacts;
             $data['contacts'] = $contacts;
         } else {
