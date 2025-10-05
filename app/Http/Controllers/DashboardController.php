@@ -40,7 +40,11 @@ class DashboardController extends Controller
             $data['rooms'] = $rooms;
         }
 
-        dd($rooms);
-        return Inertia::render('Index');
+
+        return Inertia::render('Index', [
+            'auth'=>auth()->user(),
+            'data'=>$data,
+            'search'=>$search
+        ]);
     }
 }

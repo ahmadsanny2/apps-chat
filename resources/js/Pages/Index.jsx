@@ -1,8 +1,11 @@
+import List from "@/Components/List/Index";
 import Settings from "@/Components/Settings";
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
 import { Head } from "@inertiajs/react";
 
-export default function Welcome({ auth }) {
+export default function Welcome({ auth, data, search }) {
+    console.log(data, search)
+
     return (
         <AuthenticatedLayout>
             <Head title="Welcome" />
@@ -20,7 +23,8 @@ export default function Welcome({ auth }) {
                             # Search #
                         </div>
                         <div className="flex-1 px-4 overflow-y-auto">
-                            # Room #
+                            <List title="Rooms" data={data.rooms} />
+                            <List title="Contacts" data={data.contacts} />
                         </div>
                     </div>
                 </div>
